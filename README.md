@@ -5,9 +5,9 @@
 2. Download the Kvaisr dataset (version 2) following the instructions in https://datasets.simula.no/kvasir/#data-collection
 
 
-##Command
+## Command
 
-###Covidx dataset under non-iid settings
+### Covidx dataset under non-iid settings
 
 Baseline
   python  federated_main_covid.py --model=CovidNet --dataset=covid --gpu=0 --iid=0 --num_local=0  --epochs=100  --seed=123 --local_ep=3  --exp_id=20210101001 --    num_users=5 
@@ -18,7 +18,7 @@ FLOP
   python  federated_main_covid.py --model=CovidNet --dataset=covid --gpu=0 --iid=0 --num_local=1  --epochs=100  --seed=123 --local_ep=3  --exp_id=20210101001 --    num_users=5 
   
   
-###Kvasir dataset under non-iid settings
+### Kvasir dataset under non-iid settings
 
 Baseline
   python   federated_main_kvasir.py --model=Mobile_Net --dataset=kvasir --gpu=0 --iid=0 --epochs=100  --seed=123 --local_ep=3  --exp_id=20210101001 --num_local=0 ----num_users=5 
