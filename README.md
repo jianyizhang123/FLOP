@@ -3,7 +3,7 @@
 
 ## Evironment
 
-Python=3.6 + Pytorch=1.6.0
+Python==3.6 + Pytorch==1.6.0
 
 ## Get datasets
 
