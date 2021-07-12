@@ -2,7 +2,7 @@
 ## Get datasets
 
 1. Download the CovidX dataset following the instructions in https://github.com/lindawangg/COVID-Net. Create a file directory called datax and put the data into it.
-2. Download the Kvaisr dataset (version 2) following the instructions in https://datasets.simula.no/kvasir/#data-collection
+2. Download the Kvaisr dataset (version 2) following the instructions in https://datasets.simula.no/kvasir/#data-collection.
 
 
 ## Command
