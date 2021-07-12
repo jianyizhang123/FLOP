@@ -1,4 +1,10 @@
 # FLOP-covid
+
+
+## Evironment
+
+Python=3.6 + Pytorch=1.6.0
+
 ## Get datasets
 
 1. Download the CovidX dataset following the instructions in https://github.com/lindawangg/COVID-Net. Create a file directory called datax and put the data into it.
