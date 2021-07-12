@@ -24,9 +24,7 @@ from collections import OrderedDict
 from torchvision.models import resnet50,resnext50_32x4d,mobilenet_v2
 import pdb
 
-#np.random.seed(3)
-#torch.manual_seed(3)
-#if torch.cuda.is_available(): torch.cuda.manual_seed_all(3)
+
 
 if __name__ == '__main__':
     start_time = time.time()
@@ -41,13 +39,12 @@ if __name__ == '__main__':
 
 
 
-    #if args.gpu:
-    #    torch.cuda.set_device(args.gpu)
+    
     if args.gpu==0:
         device = 'cuda:0'
     if args.gpu==1:
         device = 'cuda:1'
-     #if args.gpu else 'cpu'
+    
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     if torch.cuda.is_available(): torch.cuda.manual_seed_all(args.seed)
@@ -89,32 +86,19 @@ if __name__ == '__main__':
     else:
         exit('Error: unrecognized model')
 
-    # Set the model to train and send it to device.
-    #global_model#.to(device)
-    #global_model.cuda()
-    #global_model.train()
-    #print(global_model)
+    
 
     # copy weights
     global_weights = global_model.state_dict()
 
-    ### Note that you should search the start point to diverge
-    #shared_weights_names = [s if s.startswith('conv') for s in global_weights.keys()] # conv for temp
-    #local_weights_names = [s for s in global_weights.keys() if s.startswith('fc')]  # fc for temp
+    
     if args.dataset == 'cifar':
         local_weights_names = [s for s in global_weights.keys() if s.startswith('classifier')]  # fc for temp
 
     if args.dataset == 'kvasir':
         local_weights_names = [s for s in global_weights.keys() if s.startswith('classifier')]  # fc for temp
     if args.dataset == "covid":
-        # if args.num_local==0:
-        #     local_weights_names = []
-        # if args.num_local==1:
-        #     local_weights_names = [s for s in global_weights.keys() if s.startswith('classifier')]
-        # if args.num_local==2:
-        #     local_weights_names = [s for s in global_weights.keys() if s.startswith('classifier') or s.startswith("fc2")]
-        # if args.num_local==3:
-        #     local_weights_names = [s for s in global_weights.keys() if s.startswith('classifier') or s.startswith("fc")]
+        
         if args.model=="resnet50":
             if args.num_local==0:
                 local_weights_names = []
@@ -135,15 +119,13 @@ if __name__ == '__main__':
 
 
 
-    #pdb.set_trace()
     original_weights = copy.deepcopy(global_weights)
     local_original_weights = OrderedDict()
     for name in local_weights_names:
         local_original_weights[name] = original_weights[name]
-    #pdb.set_trace()
+    
     avg_we_cpu=weights2cpu(global_weights)
-    #del global_model, global_weights
-    #shared_weights = dict()
+    
     refer_weights = dict()  # to record the local weights for each client
 
     # Training
@@ -160,19 +142,18 @@ if __name__ == '__main__':
 
 
     for epoch in tqdm(range(args.epochs)):
-        #global_model.to(device)
-        #global_model.load_state_dict(avg_we_cpu)
+        
 
         local_weights, local_losses = [], []
         print(f'\n | Global Training Round : {epoch+1} |\n')
 
-        #global_model.train()
+        
 
 
         m = max(int(args.frac * args.num_users), 1)
         idxs_users = np.random.choice(range(args.num_users), m, replace=False)
         print(idxs_users)
-        #pdb.set_trace()
+        
         counter=0
 
 
@@ -182,8 +163,7 @@ if __name__ == '__main__':
 
             temp_model = copy.deepcopy(global_model)
 
-            #del global_model
-            # assembly the shared parameters and local parameters
+            
             temp_local_weights = temp_model.state_dict()
             if idx in refer_weights:
                 pre_weights = refer_weights[idx]
@@ -200,8 +180,7 @@ if __name__ == '__main__':
 
 
 
-            #w, loss = local_model.update_weights(
-            #    model=copy.deepcopy(global_model), global_round=epoch)
+            
 
             w, loss = local_model.update_weights(
                 model=temp_model, global_round=epoch)
@@ -258,7 +237,7 @@ if __name__ == '__main__':
             temp_model.load_state_dict(temp_global_weights)
             temp_model.to(device)
             temp_model.eval()
-            #pdb.set_trace()
+            
 
             #acc, loss = local_model.inference(model=global_model)
             acc, loss, confusion_MA= local_model.inference(model=temp_model,idx_epoch=epoch)
@@ -266,8 +245,7 @@ if __name__ == '__main__':
             list_loss.append(loss)
             list_confusion_MA.append(confusion_MA)
             temp_model.to("cpu")
-            #if c==args.num_users-1:
-                #pdb.set_trace()
+            
             del temp_model
         train_local_test_loss.append(sum(list_loss) / len(list_loss))
         train_accuracy.append(sum(list_acc) / len(list_acc))
@@ -276,7 +254,7 @@ if __name__ == '__main__':
         if train_accuracy[-1]>best_train_acc:
             best_train_acc=train_accuracy[-1]
             best_train_confusion_MA=list_confusion_MA
-        #pdb.set_trace()
+        
 
         # print global training loss after every 'i' rounds
         if (epoch+1) % 1 == 0:
@@ -317,21 +295,8 @@ if __name__ == '__main__':
             np.save("temfig/" + str(args.exp_id) + "_train_accuracy_" + str(args.num_local), train_accuracy)
             np.save("temfig/" + str(args.exp_id) + "_train_confusion_MA_" + str(args.num_local), best_train_confusion_MA)
             np.save("temfig/" + str(args.exp_id) + "_test_confusion_MA_" + str(args.num_local), best_test_confusion_MA)
-            #print("|---- Test Accuracy: {:.2f}%".format(100 * test_acc))
-            #print(list_acc)
-            #array_list_acc = np.asarray(list_acc)
-            #if epoch == args.epochs - 1:
-            #np.savetxt("list_acc_record/"+args.dataset+"_partial_acclist_nonshu"+str(epoch+1)+".txt", array_list_acc)
-            pdb.set_trace()
-    #pdb.set_trace()
-
-
-    # Test inference after completion of training
-    # temp_model = copy.deepcopy(global_model)
-    # temp_model.eval()
-    # test_acc, test_loss, test_confusion_MA = test_inference(args, temp_model.cuda(), test_dataset,idx_epoch=epoch)
-    # temp_model.to("cpu")
-    # del temp_model
+            
+    
 
     print(f' \n Results after {args.epochs} global rounds of training:')
     print("|---- Avg Train Accuracy: {:.2f}%".format(100*train_accuracy[-1]))
@@ -348,27 +313,4 @@ if __name__ == '__main__':
     print('\n Total Run Time: {0:0.4f}'.format(time.time()-start_time))
     writer.close()
 
-    # PLOTTING (optional)
-    # import matplotlib
-    # import matplotlib.pyplot as plt
-    # matplotlib.use('Agg')
-
-    # Plot Loss curve
-    # plt.figure()
-    # plt.title('Training Loss vs Communication rounds')
-    # plt.plot(range(len(train_loss)), train_loss, color='r')
-    # plt.ylabel('Training loss')
-    # plt.xlabel('Communication Rounds')
-    # plt.savefig('../save/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_loss.png'.
-    #             format(args.dataset, args.model, args.epochs, args.frac,
-    #                    args.iid, args.local_ep, args.local_bs))
-    #
-    # # Plot Average Accuracy vs Communication rounds
-    # plt.figure()
-    # plt.title('Average Accuracy vs Communication rounds')
-    # plt.plot(range(len(train_accuracy)), train_accuracy, color='k')
-    # plt.ylabel('Average Accuracy')
-    # plt.xlabel('Communication Rounds')
-    # plt.savefig('../save/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_acc.png'.
-    #             format(args.dataset, args.model, args.epochs, args.frac,
-    #                    args.iid, args.local_ep, args.local_bs))
+    
