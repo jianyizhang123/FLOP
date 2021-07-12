@@ -99,6 +99,12 @@ if __name__ == '__main__':
         local_weights_names = [s for s in global_weights.keys() if s.startswith('classifier')]  # fc for temp
     if args.dataset == "covid":
         
+        if args.model=="CovidNet":
+            if args.num_local==0:
+                local_weights_names = []
+            if args.num_local == 1:
+                local_weights_names = [s for s in global_weights.keys() if s.startswith('classifier') or s.startswith("fc")]
+        
         if args.model=="resnet50":
             if args.num_local==0:
                 local_weights_names = []
