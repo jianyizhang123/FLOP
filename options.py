@@ -13,21 +13,21 @@ def args_parser():
                         help="number of rounds of training")
     parser.add_argument('--num_users', type=int, default=100,
                         help="number of users: K")
-    parser.add_argument('--frac', type=float, default=0.1,
+    parser.add_argument('--frac', type=float, default=0.4,
                         help='the fraction of clients: C')
     parser.add_argument('--local_ep', type=int, default=10,
                         help="the number of local epochs: E")
     parser.add_argument('--local_bs', type=int, default=10,
                         help="local batch size: B")
-    parser.add_argument('--lr', type=float, default=0.01,
+    parser.add_argument('--lr', type=float, default=0.0005,
                         help='learning rate')
-    parser.add_argument('--momentum', type=float, default=0.5,
+    parser.add_argument('--momentum', type=float, default=0.9,
                         help='SGD momentum (default: 0.5)')
-    parser.add_argument('--weight_decay', type=float, default=0.0001,
+    parser.add_argument('--weight_decay', type=float, default=0.0000001,
                         help='SGD weight_decay')
-    parser.add_argument('--Lam', type=float, default=0.4,
+    parser.add_argument('--Lam', type=float, default=0.7,
                         help='the fraction used to split the dataset for cifarnoniid_new')
-    parser.add_argument('--num_chunk', type=int, default=10,
+    parser.add_argument('--num_chunk', type=int, default=50,
                         help='the number of chunk used to split the dataset for cifarnoniid_new')
     parser.add_argument('--scheduler', type=list,default=[30,40,60], help="the scheduler for weituo's idea")
 
